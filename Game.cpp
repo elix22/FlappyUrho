@@ -148,7 +148,7 @@ public:
         scene_->CreateComponent<PhysicsWorld>();
 
         Node* cameraNode{scene_->CreateChild("Camera")};
-        Camera* camera{cameraNode->CreateComponent<Camera>()};
+        cameraNode->CreateComponent<Camera>();
         cameraNode->SetPosition(CAMERA_DEFAULT_POS);
         cameraNode->CreateComponent<CameraLogic>();
 
@@ -228,7 +228,6 @@ public:
         staticModel->SetCastShadows(true);
         staticModel->ApplyMaterialList();
 
-        RigidBody* body{pipeNode->CreateComponent<RigidBody>()};
         CollisionShape* shape{pipeNode->CreateComponent<CollisionShape>()};
         shape->SetShapeType(SHAPE_BOX);
         shape->SetSize(Vector3(7.8f, 30.0f, 7.8f));
@@ -249,8 +248,6 @@ public:
 
     void HandleUpdate(StringHash eventType, VariantMap& eventData)
     {
-        float timeStep{eventData[Update::P_TIMESTEP].GetFloat()};
-
         if (INPUT->GetMouseButtonPress(MOUSEB_LEFT))
         {
             if (GLOBAL->gameState_ == GS_INTRO)
