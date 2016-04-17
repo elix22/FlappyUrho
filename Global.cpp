@@ -30,4 +30,13 @@ void Global::HandlePostUpdate(StringHash eventType, VariantMap& eventData)
         scoreText->SetText(str + String(score_));
         scoreTextDirty_ = false;
     }
+    if (INPUT->GetKeyPress(KEY_9)){
+        Image screenshot{GetContext()};
+        GRAPHICS->TakeScreenShot(screenshot);
+        //Here we save in the Data folder with date and time appended
+        String fileName{GetSubsystem<FileSystem>()->GetProgramDir() + "Screenshots/Screenshot_" +
+                Time::GetTimeStamp().Replaced(':', '_').Replaced('.', '_').Replaced(' ', '_')+".png"};
+        Log::Write(1, fileName);
+        screenshot.SavePNG(fileName);
+    }
 }

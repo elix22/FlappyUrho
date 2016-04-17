@@ -28,6 +28,7 @@
 #define INPUT GetSubsystem<Input>()
 #define UI_ROOT GetSubsystem<UI>()->GetRoot()
 #define RENDERER GetSubsystem<Renderer>()
+#define GRAPHICS GetSubsystem<Graphics>()
 
 enum GameState
 {
