@@ -13,10 +13,10 @@ void CameraLogic::RegisterObject(Context* context)
 
 void CameraLogic::Update(float timeStep)
 {
-    int wheel = INPUT->GetMouseMoveWheel();
+    int wheel{INPUT->GetMouseMoveWheel()};
     if (wheel != 0)
     {
-        auto pos = node_->GetPosition();
+        auto pos{node_->GetPosition()};
         pos.z_ += wheel * 4.0f;
 
         if (pos.z_ > -5.0f)

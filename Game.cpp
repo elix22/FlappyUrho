@@ -1,6 +1,6 @@
 ﻿#include "Global.h"
 #include "BarrierLogic.h"
-#include "UfoLogic.h"
+#include "FishLogic.h"
 #include "EnvironmentLogic.h"
 #include "CameraLogic.h"
 
@@ -15,13 +15,13 @@ private:
 public:
     Game(Context* context) :
         Application(context),
-        scene_(nullptr),
-        drawDebug_(false)
+        scene_{nullptr},
+        drawDebug_{false}
     {
         SubscribeToEvent(E_BEGINFRAME, URHO3D_HANDLER(Game, HandleBeginFrame));
 
         BarrierLogic::RegisterObject(context);
-        UfoLogic::RegisterObject(context);
+        FishLogic::RegisterObject(context);
         EnvironmentLogic::RegisterObject(context);
         CameraLogic::RegisterObject(context);
 
@@ -38,18 +38,25 @@ public:
         SetRandomSeed(Time::GetSystemTime());
 
         CreateScene();
-        CreateUfo();
+        CreateUrho();
         CreateBarriers();
         CreateUI();
 
-        auto camera = scene_->GetChild("Camera")->GetComponent<Camera>();
-        auto viewport = new Viewport(context_, scene_, camera);
+        auto camera{scene_->GetChild("Camera")->GetComponent<Camera>()};
+        auto viewport{new Viewport(context_, scene_, camera)};
         RENDERER->SetViewport(0, viewport);
 
         viewport->GetRenderPath()->Append(CACHE->GetResource<XMLFile>("PostProcess/FXAA3.xml"));
 
         SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(Game, HandleUpdate));
         SubscribeToEvent(E_POSTRENDERUPDATE, URHO3D_HANDLER(Game, HandlePostRenderUpdate));
+
+        SoundSource* musicSource{scene_->GetOrCreateComponent<SoundSource>()};
+        musicSource->SetSoundType(SOUND_MUSIC);
+        musicSource->SetGain(0.23f);
+        Sound* music{CACHE->GetResource<Sound>("Music/Urho - Disciples of Urho.ogg")};
+        music->SetLooped(true);
+        musicSource->Play(music);
     }
 
     void HandleBeginFrame(StringHash eventType, VariantMap& eventData)
@@ -59,31 +66,31 @@ public:
 
         if (GLOBAL->neededGameState_ == GS_DEAD)
         {
-            auto ufoNode = scene_->GetChild("Ufo");
-            auto soundSource = ufoNode->GetOrCreateComponent<SoundSource>();
-            soundSource->Play(CACHE->GetResource<Sound>("Sounds/Explosion.ogg"));
+            auto urhoNode{scene_->GetChild("Urho")};
+            auto soundSource = urhoNode->GetOrCreateComponent<SoundSource>();
+            soundSource->Play(CACHE->GetResource<Sound>("Samples/Hit.ogg"));
         }
         else if (GLOBAL->neededGameState_ == GS_INTRO)
         {
-            auto ufoNode = scene_->GetChild("Ufo");
-            ufoNode->SetPosition(Vector3::ZERO);
-            ufoNode->SetRotation(UFO_DEFAULT_ROTATION);
-            auto ufoLogic = ufoNode->GetComponent<UfoLogic>();
-            ufoLogic->Reset();
+            auto urhoNode{scene_->GetChild("Urho")};
+            urhoNode->SetPosition(Vector3::ZERO);
+            urhoNode->SetRotation(UFO_DEFAULT_ROTATION);
+            auto fishLogic{urhoNode->GetComponent<FishLogic>()};
+            fishLogic->Reset();
 
             GLOBAL->SetScore(0);
 
-            PODVector<Node*> barriers;
+            PODVector<Node*> barriers{};
             scene_->GetChildrenWithComponent<BarrierLogic>(barriers);
-            for (unsigned i = 0; i < barriers.Size(); i++)
+            for (auto b : barriers)
             {
-                auto pos = barriers[i]->GetPosition();
+                auto pos = b->GetPosition();
                 pos.y_ = BAR_RANDOM_Y;
 
                 if (pos.x_ < BAR_OUTSIDE_X)
                     pos.x_ += NUM_BARRIERS * BAR_INTERVAL;
 
-                barriers[i]->SetPosition(pos);
+                b->SetPosition(pos);
             }
         }
 
@@ -94,24 +101,23 @@ public:
 
     void UpdateUIVisibility()
     {
-        String tag;
+        String tag{};
         if (GLOBAL->gameState_ == GS_GAMEPLAY)     tag = "Gameplay";
         else if (GLOBAL->gameState_ == GS_DEAD)    tag = "Dead";
         else                                       tag = "Intro";
 
-        auto uiElements = UI_ROOT->GetChildren();
-        for (auto i = uiElements.Begin(); i != uiElements.End(); i++)
+        auto uiElements{UI_ROOT->GetChildren()};
+        for (auto e : uiElements)
         {
-            auto element = *i;
-            element->SetVisible(element->HasTag(tag));
+            e->SetVisible(e->HasTag(tag));
         }
     }
 
     void CreateUI()
     {
-        auto font = CACHE->GetResource<Font>("Fonts/Ubuntu-BI.ttf");
+        auto font{CACHE->GetResource<Font>("Fonts/Ubuntu-BI.ttf")};
 
-        auto scoreText = UI_ROOT->CreateChild<Text>("Score");
+        auto scoreText{UI_ROOT->CreateChild<Text>("Score")};
         scoreText->SetFont(font, 40);
         scoreText->SetTextEffect(TE_STROKE);
         scoreText->SetColor(Color::BLACK);
@@ -128,7 +134,7 @@ public:
         helpText->SetPosition(0, UI_ROOT->GetHeight() / 4);
         helpText->AddTags("Intro;Dead");
 
-        helpText->SetText(L"Жмите левую кнопку мыши");
+        helpText->SetText("Left click to swim");
     }
 
     void CreateScene()
@@ -139,75 +145,72 @@ public:
 
         scene_->CreateComponent<PhysicsWorld>();
 
-        auto cameraNode = scene_->CreateChild("Camera");
-        auto camera = cameraNode->CreateComponent<Camera>();
+        auto cameraNode{scene_->CreateChild("Camera")};
+        auto camera{cameraNode->CreateComponent<Camera>()};
         cameraNode->SetPosition(CAMERA_DEFAULT_POS);
         cameraNode->CreateComponent<CameraLogic>();
 
-        auto lightNode = scene_->CreateChild();
-        auto light = lightNode->CreateComponent<Light>();
+        auto lightNode{scene_->CreateChild()};
+        auto light{lightNode->CreateComponent<Light>()};
         light->SetLightType(LIGHT_DIRECTIONAL);
         light->SetCastShadows(true);
+        light->SetColor(Color(0.5f, 1.0f, 1.0f));
         lightNode->SetDirection(Vector3(-0.5f, -1.0f, 1.0f));
 
-        auto envNode = scene_->CreateChild();
-        auto skybox = envNode->CreateComponent<Skybox>();
+        auto envNode{scene_->CreateChild()};
+        auto skybox{envNode->CreateComponent<Skybox>()};
         skybox->SetModel(CACHE->GetResource<Model>("Models/Box.mdl"));
         skybox->SetMaterial(CACHE->GetResource<Material>("Materials/Env.xml"));
         envNode->CreateComponent<EnvironmentLogic>();
     }
 
-    void CreateUfo()
+    void CreateUrho()
     {
-        auto ufoNode = scene_->CreateChild("Ufo");
-        auto ufoObject = ufoNode->CreateComponent<AnimatedModel>();
-        ufoObject->SetModel(CACHE->GetResource<Model>("Models/Ufo.mdl"));
-        ufoObject->SetCastShadows(true);
-        ufoNode->SetRotation(UFO_DEFAULT_ROTATION);
-        ufoNode->CreateComponent<UfoLogic>();
+        auto urhoNode{scene_->CreateChild("Urho")};
+        auto urhoObject{urhoNode->CreateComponent<AnimatedModel>()};
+        urhoObject->SetModel(CACHE->GetResource<Model>("Models/Urho.mdl"));
+        urhoObject->SetCastShadows(true);
+        urhoNode->SetRotation(UFO_DEFAULT_ROTATION);
+        urhoNode->CreateComponent<FishLogic>();
 
-        ufoObject->ApplyMaterialList();
+        urhoObject->ApplyMaterialList();
 
-        auto animCtrl = ufoNode->CreateComponent<AnimationController>();
-        animCtrl->PlayExclusive("Models/Fly.ani", 0, true);
+        auto animCtrl{urhoNode->CreateComponent<AnimationController>()};
+        animCtrl->PlayExclusive("Models/Swim.ani", 0, true);
 
-        auto body = ufoNode->CreateComponent<RigidBody>();
+        auto body{urhoNode->CreateComponent<RigidBody>()};
         body->SetMass(1.0f);
         body->SetKinematic(true);
 
-        auto shape1 = ufoNode->CreateComponent<CollisionShape>();
+        auto shape1{urhoNode->CreateComponent<CollisionShape>()};
         shape1->SetShapeType(SHAPE_CAPSULE);
-        shape1->SetSize(Vector3(1.9f, 6.4f, 0.0f));
-        shape1->SetPosition(Vector3(0.0f, -0.3f, 0.0f));
+        shape1->SetSize(Vector3(2.3f, 4.2f, 0.0f));
+        shape1->SetPosition(Vector3(0.0f, 0.1f, -0.2f));
         shape1->SetRotation(Quaternion(90.f, 0.0f, 0.0f));
-
-        auto shape2 = ufoNode->CreateComponent<CollisionShape>();
-        shape2->SetShapeType(SHAPE_CAPSULE);
-        shape2->SetSize(Vector3(1.6f, 3.3f, 0.0f));
-        shape2->SetPosition(Vector3(0.0f, 0.8f, 0.0f));
-        shape2->SetRotation(Quaternion(90.f, 0.0f, 0.0f));
-
-        auto lightNode = ufoNode->CreateChild();
-        lightNode->SetPosition(Vector3(0.0f, -3.0f, 0.0f));
-        auto light = lightNode->CreateComponent<Light>();
-        light->SetColor(Color(0.0f, 1.0f, 1.0f));
-        light->SetSpecularIntensity(0.0f);
-        light->SetRange(5.0f);
     }
 
     void CreateBarriers()
     {
         for (int i = 0; i < NUM_BARRIERS; i++)
         {
-            auto barrierNode = scene_->CreateChild("Barrier");
+            auto barrierNode{scene_->CreateChild("Barrier")};
             barrierNode->CreateComponent<BarrierLogic>();
 
             barrierNode->SetPosition(Vector3(BAR_OUTSIDE_X + i * BAR_INTERVAL, BAR_RANDOM_Y, 0.0f));
 
             barrierNode->CreateComponent<RigidBody>();
-            auto shape = barrierNode->CreateComponent<CollisionShape>();
+            auto shape{barrierNode->CreateComponent<CollisionShape>()};
             shape->SetShapeType(SHAPE_BOX);
             shape->SetSize(Vector3(7.8f, BAR_GAP, 7.8f));
+
+            for (auto pos : {Vector3::UP * 3.0f, Vector3::DOWN * 3.0f}){
+                auto lightNode{barrierNode->CreateChild()};
+                lightNode->SetPosition(pos);
+                auto light{lightNode->CreateComponent<Light>()};
+                light->SetColor(Color(1.0f, 0.3f, 0.0f));
+                light->SetSpecularIntensity(0.2f);
+                light->SetRange(10.0f);
+            }
 
             CreatePipe(barrierNode, true);
             CreatePipe(barrierNode, false);
@@ -216,15 +219,15 @@ public:
 
     Node* CreatePipe(Node* barrierNode, bool top)
     {
-        auto pipeNode = barrierNode->CreateChild("Pipe");
+        auto pipeNode{barrierNode->CreateChild("Pipe")};
         
-        auto staticModel = pipeNode->CreateComponent<StaticModel>();
+        auto staticModel{pipeNode->CreateComponent<StaticModel>()};
         staticModel->SetModel(CACHE->GetResource<Model>("Models/Pipe.mdl"));
         staticModel->SetCastShadows(true);
         staticModel->ApplyMaterialList();
 
-        auto body = pipeNode->CreateComponent<RigidBody>();
-        auto shape = pipeNode->CreateComponent<CollisionShape>();
+        auto body{pipeNode->CreateComponent<RigidBody>()};
+        auto shape{pipeNode->CreateComponent<CollisionShape>()};
         shape->SetShapeType(SHAPE_BOX);
         shape->SetSize(Vector3(7.8f, 30.0f, 7.8f));
         shape->SetPosition(Vector3(0.0f, -15.0f, 0.0f));
@@ -244,8 +247,7 @@ public:
 
     void HandleUpdate(StringHash eventType, VariantMap& eventData)
     {
-        using namespace Update;
-        float timeStep = eventData[P_TIMESTEP].GetFloat();
+        float timeStep{eventData[Update::P_TIMESTEP].GetFloat()};
 
         if (INPUT->GetMouseButtonPress(MOUSEB_LEFT))
         {

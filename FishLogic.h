@@ -1,14 +1,14 @@
-﻿#ifndef UFOLOGIC_H
-#define UFOLOGIC_H
+﻿#ifndef FISHLOGIC_H
+#define FISHLOGIC_H
 
 #include "Global.h"
 
-class UfoLogic : public LogicComponent
+class FishLogic : public LogicComponent
 {
-    URHO3D_OBJECT(UfoLogic, LogicComponent);
+    URHO3D_OBJECT(FishLogic, LogicComponent);
 
 public:
-    UfoLogic(Context* context);
+    FishLogic(Context* context);
     static void RegisterObject(Context* context);
     void OnNodeSet(Node* node);
     void Update(float timeStep);
@@ -22,4 +22,4 @@ private:
     float jumpDelay_;
 };
 
-#endif // UFOLOGIC_H
+#endif // FISHLOGIC_H
