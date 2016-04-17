@@ -31,6 +31,8 @@ public:
     void Setup()
     {
         engineParameters_["ResourcePaths"] = "Data;CoreData;Resources";
+        engineParameters_["WindowTitle"] = "Flappy Urho";
+        engineParameters_["WindowIcon"] = "icon.png";
     }
 
     void Start()
