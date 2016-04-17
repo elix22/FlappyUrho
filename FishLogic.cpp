@@ -82,6 +82,7 @@ void FishLogic::Update(float timeStep)
 
     pos += Vector3::UP * verticalSpeed_ * timeStep;
     node_->SetPosition(pos);
+    node_->SetRotation(Quaternion(Lerp(node_->GetRotation().y_, -23.0f * verticalSpeed_, timeStep * 5.0f), 90.0f, 0.0f));
 
     auto animatedModel{node_->GetComponent<AnimatedModel>()};
     if (!animatedModel->IsInView())

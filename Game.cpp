@@ -84,7 +84,7 @@ public:
             scene_->GetChildrenWithComponent<BarrierLogic>(barriers);
             for (auto b : barriers)
             {
-                auto pos = b->GetPosition();
+                auto pos{b->GetPosition()};
                 pos.y_ = BAR_RANDOM_Y;
 
                 if (pos.x_ < BAR_OUTSIDE_X)
@@ -127,7 +127,7 @@ public:
         
         scoreText->AddTags("Gameplay;Dead");
 
-        auto helpText = UI_ROOT->CreateChild<Text>();
+        auto helpText{UI_ROOT->CreateChild<Text>()};
         helpText->SetFont(font, 20);
         helpText->SetTextEffect(TE_SHADOW);
         helpText->SetAlignment(HA_CENTER, VA_CENTER);
@@ -184,14 +184,14 @@ public:
 
         auto shape1{urhoNode->CreateComponent<CollisionShape>()};
         shape1->SetShapeType(SHAPE_CAPSULE);
-        shape1->SetSize(Vector3(2.3f, 4.2f, 0.0f));
+        shape1->SetSize(Vector3(2.0f, 3.8f, 0.0f));
         shape1->SetPosition(Vector3(0.0f, 0.1f, -0.2f));
         shape1->SetRotation(Quaternion(90.f, 0.0f, 0.0f));
     }
 
     void CreateBarriers()
     {
-        for (int i = 0; i < NUM_BARRIERS; i++)
+        for (int i = 0; i < NUM_BARRIERS; ++i)
         {
             auto barrierNode{scene_->CreateChild("Barrier")};
             barrierNode->CreateComponent<BarrierLogic>();
