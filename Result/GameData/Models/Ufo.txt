@@ -1,4 +1,0 @@
-Materials/UfoBody.xml
-Materials/UfoGlass.xml
-Materials/UfoEngine.xml
-Materials/UfoLight.xml
