@@ -16,7 +16,7 @@ void BarrierLogic::Update(float timeStep)
     if (GLOBAL->gameState_ != GS_GAMEPLAY)
         return;
 
-    auto pos{node_->GetPosition()};
+    Vector3 pos{node_->GetPosition()};
     pos += Vector3::LEFT * timeStep * BAR_SPEED;
 
     if (pos.x_ < -BAR_OUTSIDE_X)

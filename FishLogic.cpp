@@ -35,7 +35,7 @@ void FishLogic::HandleCollisionEnd(StringHash eventType, VariantMap& eventData)
     {
         if (GLOBAL->gameState_ == GS_GAMEPLAY){
             GLOBAL->SetScore(GLOBAL->GetScore() + 1);
-            auto soundSource{node_->GetOrCreateComponent<SoundSource>()};
+            SoundSource* soundSource{node_->GetOrCreateComponent<SoundSource>()};
             soundSource->Play(CACHE->GetResource<Sound>("Samples/Blup" + String{Random(4)} + ".ogg"));
         }
     }
@@ -64,7 +64,7 @@ void FishLogic::Update(float timeStep)
     if (GLOBAL->gameState_ != GS_GAMEPLAY)
         return;
 
-    auto pos{node_->GetPosition()};
+    Vector3 pos{node_->GetPosition()};
 
     verticalSpeed_ -= timeStep * GRAV_ACC;
     
@@ -74,7 +74,7 @@ void FishLogic::Update(float timeStep)
     if (INPUT->GetMouseButtonPress(MOUSEB_LEFT) && jumpDelay_ <= 0.0f)
     {
         verticalSpeed_ = UP_SPEED;
-        auto soundSource{node_->GetOrCreateComponent<SoundSource>()};
+        SoundSource* soundSource{node_->GetOrCreateComponent<SoundSource>()};
         soundSource->Play(CACHE->GetResource<Sound>("Samples/Jump.ogg"));
 
         jumpDelay_ = 0.75f;
@@ -84,7 +84,7 @@ void FishLogic::Update(float timeStep)
     node_->SetPosition(pos);
     node_->SetRotation(Quaternion(Lerp(node_->GetRotation().y_, -23.0f * verticalSpeed_, timeStep * 5.0f), 90.0f, 0.0f));
 
-    auto animatedModel{node_->GetComponent<AnimatedModel>()};
+    AnimatedModel* animatedModel{node_->GetComponent<AnimatedModel>()};
     if (!animatedModel->IsInView())
         GLOBAL->neededGameState_ = GS_DEAD;
 }

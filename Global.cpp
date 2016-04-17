@@ -23,7 +23,7 @@ void Global::HandlePostUpdate(StringHash eventType, VariantMap& eventData)
 {
     if (scoreTextDirty_)
     {
-        auto scoreText{static_cast<Text*>(UI_ROOT->GetChild("Score", false))};
+        Text* scoreText{static_cast<Text*>(UI_ROOT->GetChild("Score", false))};
 
         String str{"Score: "};
 

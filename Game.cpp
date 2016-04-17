@@ -44,8 +44,8 @@ public:
         CreateBarriers();
         CreateUI();
 
-        auto camera{scene_->GetChild("Camera")->GetComponent<Camera>()};
-        auto viewport{new Viewport(context_, scene_, camera)};
+        Camera* camera{scene_->GetChild("Camera")->GetComponent<Camera>()};
+        Viewport* viewport{new Viewport(context_, scene_, camera)};
         RENDERER->SetViewport(0, viewport);
 
         viewport->GetRenderPath()->Append(CACHE->GetResource<XMLFile>("PostProcess/FXAA3.xml"));
@@ -68,25 +68,25 @@ public:
 
         if (GLOBAL->neededGameState_ == GS_DEAD)
         {
-            auto urhoNode{scene_->GetChild("Urho")};
-            auto soundSource = urhoNode->GetOrCreateComponent<SoundSource>();
+            Node* urhoNode{scene_->GetChild("Urho")};
+            SoundSource* soundSource = urhoNode->GetOrCreateComponent<SoundSource>();
             soundSource->Play(CACHE->GetResource<Sound>("Samples/Hit.ogg"));
         }
         else if (GLOBAL->neededGameState_ == GS_INTRO)
         {
-            auto urhoNode{scene_->GetChild("Urho")};
+            Node* urhoNode{scene_->GetChild("Urho")};
             urhoNode->SetPosition(Vector3::ZERO);
             urhoNode->SetRotation(UFO_DEFAULT_ROTATION);
-            auto fishLogic{urhoNode->GetComponent<FishLogic>()};
+            FishLogic* fishLogic{urhoNode->GetComponent<FishLogic>()};
             fishLogic->Reset();
 
             GLOBAL->SetScore(0);
 
             PODVector<Node*> barriers{};
             scene_->GetChildrenWithComponent<BarrierLogic>(barriers);
-            for (auto b : barriers)
+            for (Node* b : barriers)
             {
-                auto pos{b->GetPosition()};
+                Vector3 pos{b->GetPosition()};
                 pos.y_ = BAR_RANDOM_Y;
 
                 if (pos.x_ < BAR_OUTSIDE_X)
@@ -108,8 +108,8 @@ public:
         else if (GLOBAL->gameState_ == GS_DEAD)    tag = "Dead";
         else                                       tag = "Intro";
 
-        auto uiElements{UI_ROOT->GetChildren()};
-        for (auto e : uiElements)
+        Vector<SharedPtr<UIElement> > uiElements{UI_ROOT->GetChildren()};
+        for (UIElement* e : uiElements)
         {
             e->SetVisible(e->HasTag(tag));
         }
@@ -117,9 +117,9 @@ public:
 
     void CreateUI()
     {
-        auto font{CACHE->GetResource<Font>("Fonts/Ubuntu-BI.ttf")};
+        Font* font{CACHE->GetResource<Font>("Fonts/Ubuntu-BI.ttf")};
 
-        auto scoreText{UI_ROOT->CreateChild<Text>("Score")};
+        Text* scoreText{UI_ROOT->CreateChild<Text>("Score")};
         scoreText->SetFont(font, 40);
         scoreText->SetTextEffect(TE_STROKE);
         scoreText->SetColor(Color::BLACK);
@@ -129,7 +129,7 @@ public:
         
         scoreText->AddTags("Gameplay;Dead");
 
-        auto helpText{UI_ROOT->CreateChild<Text>()};
+        Text* helpText{UI_ROOT->CreateChild<Text>()};
         helpText->SetFont(font, 20);
         helpText->SetTextEffect(TE_SHADOW);
         helpText->SetAlignment(HA_CENTER, VA_CENTER);
@@ -147,20 +147,20 @@ public:
 
         scene_->CreateComponent<PhysicsWorld>();
 
-        auto cameraNode{scene_->CreateChild("Camera")};
-        auto camera{cameraNode->CreateComponent<Camera>()};
+        Node* cameraNode{scene_->CreateChild("Camera")};
+        Camera* camera{cameraNode->CreateComponent<Camera>()};
         cameraNode->SetPosition(CAMERA_DEFAULT_POS);
         cameraNode->CreateComponent<CameraLogic>();
 
-        auto lightNode{scene_->CreateChild()};
-        auto light{lightNode->CreateComponent<Light>()};
+        Node* lightNode{scene_->CreateChild()};
+        Light* light{lightNode->CreateComponent<Light>()};
         light->SetLightType(LIGHT_DIRECTIONAL);
         light->SetCastShadows(true);
         light->SetColor(Color(0.5f, 1.0f, 1.0f));
         lightNode->SetDirection(Vector3(-0.5f, -1.0f, 1.0f));
 
-        auto envNode{scene_->CreateChild()};
-        auto skybox{envNode->CreateComponent<Skybox>()};
+        Node* envNode{scene_->CreateChild()};
+        Skybox* skybox{envNode->CreateComponent<Skybox>()};
         skybox->SetModel(CACHE->GetResource<Model>("Models/Box.mdl"));
         skybox->SetMaterial(CACHE->GetResource<Material>("Materials/Env.xml"));
         envNode->CreateComponent<EnvironmentLogic>();
@@ -168,8 +168,8 @@ public:
 
     void CreateUrho()
     {
-        auto urhoNode{scene_->CreateChild("Urho")};
-        auto urhoObject{urhoNode->CreateComponent<AnimatedModel>()};
+        Node* urhoNode{scene_->CreateChild("Urho")};
+        AnimatedModel* urhoObject{urhoNode->CreateComponent<AnimatedModel>()};
         urhoObject->SetModel(CACHE->GetResource<Model>("Models/Urho.mdl"));
         urhoObject->SetCastShadows(true);
         urhoNode->SetRotation(UFO_DEFAULT_ROTATION);
@@ -177,14 +177,14 @@ public:
 
         urhoObject->ApplyMaterialList();
 
-        auto animCtrl{urhoNode->CreateComponent<AnimationController>()};
+        AnimationController* animCtrl{urhoNode->CreateComponent<AnimationController>()};
         animCtrl->PlayExclusive("Models/Swim.ani", 0, true);
 
-        auto body{urhoNode->CreateComponent<RigidBody>()};
+        RigidBody* body{urhoNode->CreateComponent<RigidBody>()};
         body->SetMass(1.0f);
         body->SetKinematic(true);
 
-        auto shape1{urhoNode->CreateComponent<CollisionShape>()};
+        CollisionShape* shape1{urhoNode->CreateComponent<CollisionShape>()};
         shape1->SetShapeType(SHAPE_CAPSULE);
         shape1->SetSize(Vector3(2.0f, 3.8f, 0.0f));
         shape1->SetPosition(Vector3(0.0f, 0.1f, -0.2f));
@@ -195,20 +195,20 @@ public:
     {
         for (int i = 0; i < NUM_BARRIERS; ++i)
         {
-            auto barrierNode{scene_->CreateChild("Barrier")};
+            Node* barrierNode{scene_->CreateChild("Barrier")};
             barrierNode->CreateComponent<BarrierLogic>();
 
             barrierNode->SetPosition(Vector3(BAR_OUTSIDE_X + i * BAR_INTERVAL, BAR_RANDOM_Y, 0.0f));
 
             barrierNode->CreateComponent<RigidBody>();
-            auto shape{barrierNode->CreateComponent<CollisionShape>()};
+            CollisionShape* shape{barrierNode->CreateComponent<CollisionShape>()};
             shape->SetShapeType(SHAPE_BOX);
             shape->SetSize(Vector3(7.8f, BAR_GAP, 7.8f));
 
-            for (auto pos : {Vector3::UP * 3.0f, Vector3::DOWN * 3.0f}){
-                auto lightNode{barrierNode->CreateChild()};
+            for (Vector3 pos : {Vector3::UP * 3.0f, Vector3::DOWN * 3.0f}){
+                Node* lightNode{barrierNode->CreateChild()};
                 lightNode->SetPosition(pos);
-                auto light{lightNode->CreateComponent<Light>()};
+                Light* light{lightNode->CreateComponent<Light>()};
                 light->SetColor(Color(1.0f, 0.3f, 0.0f));
                 light->SetSpecularIntensity(0.2f);
                 light->SetRange(10.0f);
@@ -221,15 +221,15 @@ public:
 
     Node* CreatePipe(Node* barrierNode, bool top)
     {
-        auto pipeNode{barrierNode->CreateChild("Pipe")};
+        Node* pipeNode{barrierNode->CreateChild("Pipe")};
         
-        auto staticModel{pipeNode->CreateComponent<StaticModel>()};
+        StaticModel* staticModel{pipeNode->CreateComponent<StaticModel>()};
         staticModel->SetModel(CACHE->GetResource<Model>("Models/Pipe.mdl"));
         staticModel->SetCastShadows(true);
         staticModel->ApplyMaterialList();
 
-        auto body{pipeNode->CreateComponent<RigidBody>()};
-        auto shape{pipeNode->CreateComponent<CollisionShape>()};
+        RigidBody* body{pipeNode->CreateComponent<RigidBody>()};
+        CollisionShape* shape{pipeNode->CreateComponent<CollisionShape>()};
         shape->SetShapeType(SHAPE_BOX);
         shape->SetSize(Vector3(7.8f, 30.0f, 7.8f));
         shape->SetPosition(Vector3(0.0f, -15.0f, 0.0f));
