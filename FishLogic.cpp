@@ -23,7 +23,7 @@ void FishLogic::HandleCollisionStart(StringHash eventType, VariantMap& eventData
 {
     Node* otherNode{static_cast<Node*>(eventData[NodeCollisionStart::P_OTHERNODE].GetPtr())};
 
-    if (otherNode->GetName() == "Pipe")
+    if (otherNode->GetName() == "Net")
         GLOBAL->neededGameState_ = GS_DEAD;
 }
 
@@ -35,8 +35,8 @@ void FishLogic::HandleCollisionEnd(StringHash eventType, VariantMap& eventData)
     {
         if (GLOBAL->gameState_ == GS_GAMEPLAY){
             GLOBAL->SetScore(GLOBAL->GetScore() + 1);
-            SoundSource* soundSource{node_->GetOrCreateComponent<SoundSource>()};
-            soundSource->Play(CACHE->GetResource<Sound>("Samples/Blup" + String{Random(4)} + ".ogg"));
+            SoundSource* soundSource{otherNode->GetOrCreateComponent<SoundSource>()};
+            soundSource->Play(CACHE->GetResource<Sound>("Samples/Pass.ogg"));
         }
     }
 }
@@ -75,14 +75,15 @@ void FishLogic::Update(float timeStep)
     {
         verticalSpeed_ = UP_SPEED;
         SoundSource* soundSource{node_->GetOrCreateComponent<SoundSource>()};
-        soundSource->Play(CACHE->GetResource<Sound>("Samples/Jump.ogg"));
+        soundSource->Play(CACHE->GetResource<Sound>("Samples/Blup" + String{Random(4)} + ".ogg"));
 
         jumpDelay_ = 0.75f;
     }
 
     pos += Vector3::UP * verticalSpeed_ * timeStep;
     node_->SetPosition(pos);
-    node_->SetRotation(Quaternion(Lerp(node_->GetRotation().y_, -23.0f * verticalSpeed_, timeStep * 5.0f), 90.0f, 0.0f));
+    float xRot{Clamp(Lerp(node_->GetRotation().y_, -42.0f * verticalSpeed_, Clamp(timeStep * 2.0f, 0.0f, 0.5f)), -13.0f, 13.0f)};
+    node_->SetRotation(Quaternion(xRot, 90.0f, 0.0f));
 
     AnimatedModel* animatedModel{node_->GetComponent<AnimatedModel>()};
     if (!animatedModel->IsInView())

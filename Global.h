@@ -3,7 +3,7 @@
 
 #include "Urho3DAll.h"
 
-#define NUM_BARRIERS 3
+#define NUM_BARRIERS 5
 
 #define BAR_GAP 10.0f
 
@@ -13,7 +13,7 @@
 
 #define BAR_RANDOM_Y Random(-6.0f, 6.0f)
 
-#define BAR_OUTSIDE_X 30.0f
+#define BAR_OUTSIDE_X 50.0f
 
 #define GRAV_ACC 9.8f
 

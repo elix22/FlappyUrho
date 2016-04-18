@@ -69,7 +69,7 @@ public:
         if (GLOBAL->neededGameState_ == GS_DEAD)
         {
             Node* urhoNode{scene_->GetChild("Urho")};
-            SoundSource* soundSource = urhoNode->GetOrCreateComponent<SoundSource>();
+            SoundSource* soundSource{urhoNode->GetOrCreateComponent<SoundSource>()};
             soundSource->Play(CACHE->GetResource<Sound>("Samples/Hit.ogg"));
         }
         else if (GLOBAL->neededGameState_ == GS_INTRO)
@@ -152,17 +152,28 @@ public:
         cameraNode->SetPosition(CAMERA_DEFAULT_POS);
         cameraNode->CreateComponent<CameraLogic>();
 
+        Zone* zone{cameraNode->CreateComponent<Zone>()};
+        zone->SetBoundingBox(BoundingBox(-100.0f * Vector3::ONE, 100.0f * Vector3::ONE));
+        zone->SetFogStart(34.0f);
+        zone->SetFogEnd(62.0f);
+        zone->SetFogHeight(-19.0f);
+        zone->SetHeightFog(true);
+        zone->SetFogHeightScale(0.1f);
+        zone->SetFogColor(Color(0.1f, 0.3f, 0.3f));
+
         Node* lightNode{scene_->CreateChild()};
         Light* light{lightNode->CreateComponent<Light>()};
         light->SetLightType(LIGHT_DIRECTIONAL);
         light->SetCastShadows(true);
-        light->SetColor(Color(0.5f, 1.0f, 1.0f));
+        light->SetShadowIntensity(0.23f);
+        light->SetColor(Color(0.8f, 1.0f, 1.0f));
         lightNode->SetDirection(Vector3(-0.5f, -1.0f, 1.0f));
 
         Node* envNode{scene_->CreateChild()};
         Skybox* skybox{envNode->CreateComponent<Skybox>()};
         skybox->SetModel(CACHE->GetResource<Model>("Models/Box.mdl"));
         skybox->SetMaterial(CACHE->GetResource<Material>("Materials/Env.xml"));
+        skybox->SetZone(zone);
         envNode->CreateComponent<EnvironmentLogic>();
     }
 
@@ -193,57 +204,43 @@ public:
 
     void CreateBarriers()
     {
-        for (int i = 0; i < NUM_BARRIERS; ++i)
+        for (int i{0}; i < NUM_BARRIERS; ++i)
         {
             Node* barrierNode{scene_->CreateChild("Barrier")};
             barrierNode->CreateComponent<BarrierLogic>();
 
             barrierNode->SetPosition(Vector3(BAR_OUTSIDE_X + i * BAR_INTERVAL, BAR_RANDOM_Y, 0.0f));
+            barrierNode->SetRotation(Quaternion(Random(2) ? 180.0f : 0.0f,
+                                                Random(2) ? 180.0f + Random(-5.0f, 5.0f) : 0.0f + Random(-5.0f, 5.0f) ,
+                                                Random(2) ? 180.0f + Random(-5.0f, 5.0f) : 0.0f + Random(-5.0f, 5.0f) ));
 
             barrierNode->CreateComponent<RigidBody>();
             CollisionShape* shape{barrierNode->CreateComponent<CollisionShape>()};
             shape->SetShapeType(SHAPE_BOX);
-            shape->SetSize(Vector3(7.8f, BAR_GAP, 7.8f));
+            shape->SetSize(Vector3(1.0f, BAR_GAP, 7.8f));
 
-            for (Vector3 pos : {Vector3::UP * 3.0f, Vector3::DOWN * 3.0f}){
-                Node* lightNode{barrierNode->CreateChild()};
-                lightNode->SetPosition(pos);
-                Light* light{lightNode->CreateComponent<Light>()};
-                light->SetColor(Color(1.0f, 0.3f, 0.0f));
-                light->SetSpecularIntensity(0.2f);
-                light->SetRange(10.0f);
-            }
-
-            CreatePipe(barrierNode, true);
-            CreatePipe(barrierNode, false);
+            CreateNet(barrierNode);
         }
     }
 
-    Node* CreatePipe(Node* barrierNode, bool top)
+    Node* CreateNet(Node* barrierNode)
     {
-        Node* pipeNode{barrierNode->CreateChild("Pipe")};
+        Node* netNode{barrierNode->CreateChild("Net")};
         
-        StaticModel* staticModel{pipeNode->CreateComponent<StaticModel>()};
-        staticModel->SetModel(CACHE->GetResource<Model>("Models/Pipe.mdl"));
+        StaticModel* staticModel{netNode->CreateComponent<StaticModel>()};
+        staticModel->SetModel(CACHE->GetResource<Model>("Models/Net.mdl"));
         staticModel->SetCastShadows(true);
         staticModel->ApplyMaterialList();
 
-        CollisionShape* shape{pipeNode->CreateComponent<CollisionShape>()};
-        shape->SetShapeType(SHAPE_BOX);
-        shape->SetSize(Vector3(7.8f, 30.0f, 7.8f));
-        shape->SetPosition(Vector3(0.0f, -15.0f, 0.0f));
-
-        if (top)
-        {
-            pipeNode->SetPosition(Vector3(0.0f, BAR_GAP / 2, 0.0f));
-            pipeNode->SetRotation(Quaternion(180.0f, 0.0f, 0.0f));
-        }
-        else
-        {
-            pipeNode->SetPosition(Vector3(0.0f, -BAR_GAP / 2, 0.0f));
+        for (float y : {15.0f, -15.0f}){
+            netNode->CreateComponent<RigidBody>();
+            CollisionShape* shape{netNode->CreateComponent<CollisionShape>()};
+            shape->SetShapeType(SHAPE_BOX);
+            shape->SetSize(Vector3(1.0f, 30.0f, 64.0f));
+            shape->SetPosition(Vector3(0.0f, y + Sign(y)*(BAR_GAP / 2), 0.0f));
         }
 
-        return pipeNode;
+        return netNode;
     }
 
     void HandleUpdate(StringHash eventType, VariantMap& eventData)
