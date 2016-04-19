@@ -236,7 +236,7 @@ public:
             netNode->CreateComponent<RigidBody>();
             CollisionShape* shape{netNode->CreateComponent<CollisionShape>()};
             shape->SetShapeType(SHAPE_BOX);
-            shape->SetSize(Vector3(1.0f, 30.0f, 64.0f));
+            shape->SetSize(Vector3(0.23f, 30.0f, 64.0f));
             shape->SetPosition(Vector3(0.0f, y + Sign(y)*(BAR_GAP / 2), 0.0f));
         }
 

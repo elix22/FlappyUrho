@@ -85,6 +85,9 @@ void FishLogic::Update(float timeStep)
     float xRot{Clamp(Lerp(node_->GetRotation().y_, -42.0f * verticalSpeed_, Clamp(timeStep * 2.0f, 0.0f, 0.5f)), -13.0f, 13.0f)};
     node_->SetRotation(Quaternion(xRot, 90.0f, 0.0f));
 
+    AnimationController* animationController{node_->GetComponent<AnimationController>()};
+    animationController->SetSpeed("Models/Swim.ani", Clamp(0.1f*(verticalSpeed_ + 23.0f), 0.0f, 5.0f));
+
     AnimatedModel* animatedModel{node_->GetComponent<AnimatedModel>()};
     if (!animatedModel->IsInView())
         GLOBAL->neededGameState_ = GS_DEAD;
