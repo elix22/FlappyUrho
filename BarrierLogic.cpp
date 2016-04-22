@@ -25,8 +25,8 @@ void BarrierLogic::Update(float timeStep)
         pos.y_ = BAR_RANDOM_Y;
 
         node_->SetRotation(Quaternion(Random(2) ? 180.0f : 0.0f,
-                                            Random(2) ? 180.0f + Random(-5.0f, 5.0f) : 0.0f + Random(-5.0f, 5.0f) ,
-                                            Random(2) ? 180.0f + Random(-5.0f, 5.0f) : 0.0f + Random(-5.0f, 5.0f) ));
+                                      Random(2) ? 180.0f + Random(-5.0f, 5.0f) : 0.0f + Random(-5.0f, 5.0f) ,
+                                      Random(2) ? 180.0f + Random(-5.0f, 5.0f) : 0.0f + Random(-5.0f, 5.0f) ));
     }
 
     node_->SetPosition(pos);

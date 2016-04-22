@@ -41,7 +41,7 @@ public:
 
         CreateScene();
         CreateUrho();
-        CreateBarriers();
+        CreateNets();
         CreateUI();
 
         Camera* camera{scene_->GetChild("Camera")->GetComponent<Camera>()};
@@ -56,9 +56,11 @@ public:
         SoundSource* musicSource{scene_->GetOrCreateComponent<SoundSource>()};
         musicSource->SetSoundType(SOUND_MUSIC);
         musicSource->SetGain(0.23f);
-        Sound* music{CACHE->GetResource<Sound>("Music/Urho - Disciples of Urho.ogg")};
+        Sound* music{CACHE->GetResource<Sound>("Music/Urho - Disciples of Urho_LOOP.ogg")};
         music->SetLooped(true);
         musicSource->Play(music);
+
+//        SubscribeToEvent();
     }
 
     void HandleBeginFrame(StringHash eventType, VariantMap& eventData)
@@ -76,7 +78,7 @@ public:
         {
             Node* urhoNode{scene_->GetChild("Urho")};
             urhoNode->SetPosition(Vector3::ZERO);
-            urhoNode->SetRotation(UFO_DEFAULT_ROTATION);
+            urhoNode->SetRotation(URHO_DEFAULT_ROTATION);
             FishLogic* fishLogic{urhoNode->GetComponent<FishLogic>()};
             fishLogic->Reset();
 
@@ -183,7 +185,7 @@ public:
         AnimatedModel* urhoObject{urhoNode->CreateComponent<AnimatedModel>()};
         urhoObject->SetModel(CACHE->GetResource<Model>("Models/Urho.mdl"));
         urhoObject->SetCastShadows(true);
-        urhoNode->SetRotation(UFO_DEFAULT_ROTATION);
+        urhoNode->SetRotation(URHO_DEFAULT_ROTATION);
         urhoNode->CreateComponent<FishLogic>();
 
         urhoObject->ApplyMaterialList();
@@ -202,7 +204,7 @@ public:
         shape1->SetRotation(Quaternion(90.f, 0.0f, 0.0f));
     }
 
-    void CreateBarriers()
+    void CreateNets()
     {
         for (int i{0}; i < NUM_BARRIERS; ++i)
         {
@@ -219,28 +221,21 @@ public:
             shape->SetShapeType(SHAPE_BOX);
             shape->SetSize(Vector3(1.0f, BAR_GAP, 7.8f));
 
-            CreateNet(barrierNode);
+            Node* netNode{barrierNode->CreateChild("Net")};
+
+            StaticModel* staticModel{netNode->CreateComponent<StaticModel>()};
+            staticModel->SetModel(CACHE->GetResource<Model>("Models/Net.mdl"));
+            staticModel->SetCastShadows(true);
+            staticModel->ApplyMaterialList();
+
+            for (float y : {15.0f, -15.0f}){
+                netNode->CreateComponent<RigidBody>();
+                CollisionShape* shape{netNode->CreateComponent<CollisionShape>()};
+                shape->SetShapeType(SHAPE_BOX);
+                shape->SetSize(Vector3(0.23f, 30.0f, 64.0f));
+                shape->SetPosition(Vector3(0.0f, y + Sign(y)*(BAR_GAP / 2), 0.0f));
+            }
         }
-    }
-
-    Node* CreateNet(Node* barrierNode)
-    {
-        Node* netNode{barrierNode->CreateChild("Net")};
-        
-        StaticModel* staticModel{netNode->CreateComponent<StaticModel>()};
-        staticModel->SetModel(CACHE->GetResource<Model>("Models/Net.mdl"));
-        staticModel->SetCastShadows(true);
-        staticModel->ApplyMaterialList();
-
-        for (float y : {15.0f, -15.0f}){
-            netNode->CreateComponent<RigidBody>();
-            CollisionShape* shape{netNode->CreateComponent<CollisionShape>()};
-            shape->SetShapeType(SHAPE_BOX);
-            shape->SetSize(Vector3(0.23f, 30.0f, 64.0f));
-            shape->SetPosition(Vector3(0.0f, y + Sign(y)*(BAR_GAP / 2), 0.0f));
-        }
-
-        return netNode;
     }
 
     void HandleUpdate(StringHash eventType, VariantMap& eventData)

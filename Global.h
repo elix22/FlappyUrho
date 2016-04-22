@@ -21,7 +21,7 @@
 
 #define CAMERA_DEFAULT_POS Vector3(0.0f, 0.0f, -30.0f)
 
-#define UFO_DEFAULT_ROTATION Quaternion(0.0f, 90.0f, 0.0f)
+#define URHO_DEFAULT_ROTATION Quaternion(0.0f, 90.0f, 0.0f)
 
 #define CACHE GetSubsystem<ResourceCache>()
 #define GLOBAL GetSubsystem<Global>()
