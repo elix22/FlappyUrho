@@ -4,14 +4,16 @@
 #include "Urho3DAll.h"
 
 #define NUM_BARRIERS 5
+#define NUM_WEEDS 23
 
 #define BAR_GAP 10.0f
 
 #define BAR_INTERVAL 20.0f
 
-#define BAR_SPEED 5.0f
+#define BAR_SPEED (5.0f + Clamp(GLOBAL->sinceLastReset_ * 0.05f, 0.0f, 2.3f))
 
 #define BAR_RANDOM_Y Random(-6.0f, 6.0f)
+#define WEED_RANDOM_Y Random(-23.0f, -21.0f)
 
 #define BAR_OUTSIDE_X 50.0f
 
@@ -34,7 +36,7 @@ enum GameState
 {
     GS_INTRO = 0,
 
-    GS_GAMEPLAY,
+    GS_PLAY,
 
     GS_DEAD
 };
@@ -52,6 +54,7 @@ public:
 
     GameState gameState_;
     GameState neededGameState_;
+    float sinceLastReset_;
 
 private:
     int score_;

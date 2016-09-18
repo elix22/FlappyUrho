@@ -14,19 +14,21 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += \
-    BarrierLogic.cpp \
     CameraLogic.cpp \
-    EnvironmentLogic.cpp \
     Game.cpp \
     Global.cpp \
-    FishLogic.cpp
+    Fish.cpp \
+    Barrier.cpp \
+    Environment.cpp \
+    Weed.cpp
 
 HEADERS += \
-    BarrierLogic.h \
     CameraLogic.h \
-    EnvironmentLogic.h \
     Global.h \
     Urho3DAll.h \
-    FishLogic.h
+    Barrier.h \
+    Environment.h \
+    Fish.h \
+    Weed.h
 
 OTHER_FILES += \

@@ -3,12 +3,12 @@
 
 #include "Global.h"
 
-class FishLogic : public LogicComponent
+class Fish : public LogicComponent
 {
-    URHO3D_OBJECT(FishLogic, LogicComponent);
+    URHO3D_OBJECT(Fish, LogicComponent);
 
 public:
-    FishLogic(Context* context);
+    Fish(Context* context);
     static void RegisterObject(Context* context);
     void OnNodeSet(Node* node);
     void Update(float timeStep);
@@ -20,6 +20,7 @@ private:
     float verticalSpeed_;
 
     float jumpDelay_;
+    void CreateFish();
 };
 
 #endif // FISHLOGIC_H

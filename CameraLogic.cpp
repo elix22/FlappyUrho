@@ -13,18 +13,18 @@ void CameraLogic::RegisterObject(Context* context)
 
 void CameraLogic::Update(float timeStep)
 {
-    int wheel{INPUT->GetMouseMoveWheel()};
-    if (wheel != 0)
-    {
-        Vector3 pos{node_->GetPosition()};
-        pos.z_ += wheel * 4.0f;
+//    int wheel{INPUT->GetMouseMoveWheel()};
+//    if (wheel != 0)
+//    {
+//        Vector3 pos{node_->GetPosition()};
+//        pos.z_ += wheel * 4.0f;
 
-        if (pos.z_ > -5.0f)
-            pos.z_ = -5.0f;
+//        if (pos.z_ > -5.0f)
+//            pos.z_ = -5.0f;
         
-        node_->SetPosition(pos);
-    }
+//        node_->SetPosition(pos);
+//    }
 
-    if (INPUT->GetMouseButtonPress(MOUSEB_RIGHT))
-        node_->SetPosition(CAMERA_DEFAULT_POS);
+//    if (INPUT->GetMouseButtonPress(MOUSEB_RIGHT))
+//        node_->SetPosition(CAMERA_DEFAULT_POS);
 }

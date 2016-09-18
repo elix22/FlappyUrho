@@ -1,0 +1,7 @@
+<material>
+	<technique name="Resources/Techniques/CustomDiffAlpha.xml" quality="1" loddistance="0"/>
+	<texture name="Resources/Textures/UrhoDiffuse.png" unit="diffuse"/>
+	<texture name="Resources/Textures/UrhoSpecular.png" unit="specular"/>
+	<texture name="Resources/Textures/UrhoEmission.png" unit="emissive"/>
+
+</material>

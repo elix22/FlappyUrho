@@ -3,12 +3,12 @@
 
 #include "Global.h"
 
-class EnvironmentLogic : public LogicComponent
+class Environment : public LogicComponent
 {
-    URHO3D_OBJECT(EnvironmentLogic, LogicComponent);
+    URHO3D_OBJECT(Environment, LogicComponent);
 
 public:
-    EnvironmentLogic(Context* context);
+    Environment(Context* context);
     static void RegisterObject(Context* context);
     void Update(float timeStep);
 };

@@ -3,14 +3,15 @@
 
 #include "Global.h"
 
-class BarrierLogic : public LogicComponent
+class Barrier : public LogicComponent
 {
-    URHO3D_OBJECT(BarrierLogic, LogicComponent);
+    URHO3D_OBJECT(Barrier, LogicComponent);
 
 public:
-    BarrierLogic(Context* context);
+    Barrier(Context* context);
     static void RegisterObject(Context* context);
     void Update(float timeStep);
+    void OnNodeSet(Node* node);
 };
 
 #endif // BARRIERLOGIC_H
