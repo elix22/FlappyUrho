@@ -4,7 +4,7 @@
 #include "Urho3DAll.h"
 
 #define NUM_BARRIERS 5
-#define NUM_WEEDS 23
+#define NUM_WEEDS 34
 
 #define BAR_GAP 10.0f
 

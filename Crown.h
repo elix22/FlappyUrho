@@ -1,17 +1,17 @@
-#ifndef WEED_H
-#define WEED_H
+#ifndef CROWN_H
+#define CROWN_H
 
 #include <Global.h>
 
 
-class Weed : public LogicComponent
+class Crown : public LogicComponent
 {
-    URHO3D_OBJECT(Weed, LogicComponent);
+    URHO3D_OBJECT(Crown, LogicComponent);
 public:
-    Weed(Context* context);
+    Crown(Context* context);
     static void RegisterObject(Context* context);
     virtual void Update(float timeStep);
     virtual void OnNodeSet(Node* node);
 };
 
-#endif // WEED_H
+#endif // CROWN_H

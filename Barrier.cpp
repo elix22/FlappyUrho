@@ -1,4 +1,5 @@
 ﻿#include "Barrier.h"
+#include "Crown.h"
 
 Barrier::Barrier(Context* context) :
     LogicComponent(context)
@@ -25,10 +26,10 @@ void Barrier::OnNodeSet(Node *node)
 
     Node* netNode{GetNode()->CreateChild("Net")};
 
-    StaticModel* staticModel{netNode->CreateComponent<StaticModel>()};
-    staticModel->SetModel(CACHE->GetResource<Model>("Models/Net.mdl"));
-//    staticModel->SetCastShadows(true);
-    staticModel->ApplyMaterialList();
+    StaticModel* netModel{netNode->CreateComponent<StaticModel>()};
+    netModel->SetModel(CACHE->GetResource<Model>("Models/Net.mdl"));
+    netModel->SetCastShadows(true);
+    netModel->ApplyMaterialList();
 
     for (float y : {15.0f, -15.0f}){
         netNode->CreateComponent<RigidBody>();

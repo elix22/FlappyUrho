@@ -20,7 +20,8 @@ SOURCES += \
     Fish.cpp \
     Barrier.cpp \
     Environment.cpp \
-    Weed.cpp
+    Weed.cpp \
+    Crown.cpp
 
 HEADERS += \
     CameraLogic.h \
@@ -29,6 +30,7 @@ HEADERS += \
     Barrier.h \
     Environment.h \
     Fish.h \
-    Weed.h
+    Weed.h \
+    Crown.h
 
 OTHER_FILES += \

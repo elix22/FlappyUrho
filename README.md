@@ -1,7 +1,7 @@
 # Flappy Urho
 A fork of [1vanK's Flappy Urho](https://github.com/1vanK/FlappyUrho)
 
-![Screenshot](https://raw.githubusercontent.com/Modanung/FlappyUrho/master/Screenshots/Screenshot_Mon_Apr_18_04_05_35_2016.png)
+![Screenshot](https://raw.githubusercontent.com/Modanung/FlappyUrho/master/Screenshots/Screenshot_Sun_Sep_18_23_18_34_2016.png)
 
 ## Soudtrack
 

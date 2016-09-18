@@ -1,5 +1,6 @@
 ﻿#include "Global.h"
 #include "Barrier.h"
+#include "Crown.h"
 #include "Weed.h"
 #include "Fish.h"
 #include "Environment.h"
@@ -22,12 +23,12 @@ public:
         SubscribeToEvent(E_BEGINFRAME, URHO3D_HANDLER(Game, HandleBeginFrame));
 
         Barrier::RegisterObject(context);
+        Crown::RegisterObject(context);
         Weed::RegisterObject(context);
         Fish::RegisterObject(context);
         Environment::RegisterObject(context);
         CameraLogic::RegisterObject(context);
 
-        context->RegisterSubsystem(this);
         context->RegisterSubsystem(new Global(context));
     }
 
@@ -61,7 +62,6 @@ public:
 
         SoundSource* musicSource{scene_->GetOrCreateComponent<SoundSource>()};
         musicSource->SetSoundType(SOUND_MUSIC);
-        musicSource->SetGain(0.42f);
         Sound* music{CACHE->GetResource<Sound>("Music/Urho - Disciples of Urho_LOOP.ogg")};
         music->SetLooped(true);
         musicSource->Play(music);
@@ -87,7 +87,7 @@ public:
         zone->SetFogHeight(-19.0f);
         zone->SetHeightFog(true);
         zone->SetFogHeightScale(0.1f);
-        zone->SetFogColor(Color(0.1f, 0.3f, 0.3f));
+        zone->SetFogColor(Color(0.05f, 0.23f, 0.23f));
 
         Node* lightNode{scene_->CreateChild()};
         Light* light{lightNode->CreateComponent<Light>()};
@@ -108,6 +108,7 @@ public:
         CreateUrho();
         CreateNets();
         CreateWeeds();
+        CreateCrown();
     }
 
     void CreateUrho()
@@ -132,19 +133,18 @@ public:
             {
                 Node* weedNode{scene_->CreateChild("Weed")};
                 weedNode->CreateComponent<Weed>();
-                weedNode->SetPosition(Vector3(i * BAR_INTERVAL * Random(0.1f, 0.23f), WEED_RANDOM_Y, Random(-27.0f + r * 34.0f, -13.0f + r * 42.0f)));
+                weedNode->SetPosition(Vector3(i * BAR_INTERVAL * Random(0.1f, 0.23f) - 23.0f, WEED_RANDOM_Y, Random(-27.0f + r * 34.0f, -13.0f + r * 42.0f)));
                 weedNode->SetRotation(Quaternion(0.0f, Random(360.0f), 0.0f));
                 weedNode->SetScale(Vector3(Random(0.5f, 1.23f), Random(0.8f, 2.3f), Random(0.5f, 1.23f)));
             }
         }
-//        for (int i{0}; i < NUM_WEEDS; ++i)
-//        {
-//            Node* weedNode{scene_->CreateChild("Weed")};
-//            weedNode->CreateComponent<Weed>();
-//            weedNode->SetPosition(Vector3(i * BAR_INTERVAL * Random(0.1f, 0.23f), WEED_RANDOM_Y - 2.3f, Random(13.0f, 27.0f)));
-//            weedNode->SetRotation(Quaternion(0.0f, Random(360.0f), 0.0f));
-//            weedNode->SetScale(Vector3(Random(0.5f, 1.23f), Random(0.8f, 2.3f), Random(0.5f, 1.23f)));
-//        }
+    }
+
+    void CreateCrown()
+    {
+        Node* crownNode{ scene_->CreateChild("Crown") };
+        crownNode->Translate(Vector3::RIGHT * 19.0f, TS_WORLD);
+        crownNode->CreateComponent<Crown>();
     }
 
     void CreateUI()
@@ -206,6 +206,14 @@ public:
 
                 b->SetPosition(pos);
             }
+
+            PODVector<Node*> weeds{};
+            scene_->GetChildrenWithComponent<Weed>(weeds);
+            for (Node* w : weeds)
+            {
+                w->Remove();
+            }
+            CreateWeeds();
         }
 
         GLOBAL->gameState_ = GLOBAL->neededGameState_;
@@ -230,9 +238,10 @@ public:
     void HandleUpdate(StringHash eventType, VariantMap& eventData)
     { (void)eventType;
 
-        if (GLOBAL->gameState_ == GS_PLAY)
+        if (GLOBAL->gameState_ == GS_PLAY){
             GLOBAL->sinceLastReset_ += eventData[Update::P_TIMESTEP].GetFloat();
-
+        }
+        scene_->SetTimeScale(1.0f + Clamp(GLOBAL->sinceLastReset_ * 0.0023f, 0.0f, 1.0f));
         if (INPUT->GetMouseButtonPress(MOUSEB_LEFT))
         {
             if (GLOBAL->gameState_ == GS_INTRO)
@@ -241,11 +250,25 @@ public:
                 GLOBAL->neededGameState_ = GS_INTRO;
         }
 
-//        if (INPUT->GetKeyPress(KEY_SPACE))
-//            drawDebug_ = !drawDebug_;
+        if (INPUT->GetKeyPress(KEY_9)){
+            Image screenshot{GetContext()};
+            GRAPHICS->TakeScreenShot(screenshot);
+            //Here we save in the Data folder with date and time appended
+            String fileName{GetSubsystem<FileSystem>()->GetProgramDir() + "Screenshots/Screenshot_" +
+                    Time::GetTimeStamp().Replaced(':', '_').Replaced('.', '_').Replaced(' ', '_')+".png"};
+            Log::Write(1, fileName);
+            screenshot.SavePNG(fileName);
+        }
+        if (INPUT->GetKeyPress(KEY_M)){
+            SoundSource* musicSource{ scene_->GetComponent<SoundSource>() };
+            musicSource->SetEnabled(!musicSource->IsEnabled());
+        }
 
         if (INPUT->GetKeyPress(KEY_ESCAPE))
             engine_->Exit();
+
+//        if (INPUT->GetKeyPress(KEY_SPACE))
+//            drawDebug_ = !drawDebug_;
     }
 
     void HandlePostRenderUpdate(StringHash eventType, VariantMap& eventData)
