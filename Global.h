@@ -51,6 +51,7 @@ public:
     
     int GetScore() const { return score_; }
     void SetScore(int score);
+    int GetHighscore() const { return highscore_; }
 
     GameState gameState_;
     GameState neededGameState_;
@@ -58,6 +59,7 @@ public:
 
 private:
     int score_;
+    int highscore_;
     bool scoreTextDirty_;
 };
 

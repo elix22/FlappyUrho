@@ -65,6 +65,8 @@ public:
         Sound* music{CACHE->GetResource<Sound>("Music/Urho - Disciples of Urho_LOOP.ogg")};
         music->SetLooped(true);
         musicSource->Play(music);
+
+//        GetSubsystem<Audio>()->Stop();
     }
 
     void CreateScene()

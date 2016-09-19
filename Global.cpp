@@ -6,6 +6,7 @@ Global::Global(Context* context) :
     neededGameState_{GS_INTRO},
     sinceLastReset_{0.0f},
     score_{0},
+    highscore_{5},
     scoreTextDirty_{true}
 {
     SubscribeToEvent(E_POSTUPDATE, URHO3D_HANDLER(Global, HandlePostUpdate));
