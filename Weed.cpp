@@ -24,8 +24,9 @@ void Weed::OnNodeSet(Node* node)
 
     AnimationController* animCtrl{node_->CreateComponent<AnimationController>()};
     animCtrl->PlayExclusive("Models/Wave.ani", 1, true);
-    animCtrl->SetAnimationTime(Random(5.0f));
+    animCtrl->SetAnimationTime(Random(animCtrl->GetLength("Models/Wave.ani")));
     animCtrl->SetSpeed("Models/Wave.ani", Random(0.42f, 0.666f));
+
 }
 
 void Weed::Update(float timeStep)

@@ -23,17 +23,22 @@ void Crown::OnNodeSet(Node* node)
 
 void Crown::Update(float timeStep)
 {
-    node_->Rotate(Quaternion(timeStep * 23.0f, Vector3::UP), TS_WORLD);
+    if (GLOBAL->GetScore() > GLOBAL->GetHighscore()){
 
-    node_->Translate(Vector3::UP * 0.01f * (node_->GetScene()->GetChild("Urho")->GetPosition().y_ - node_->GetPosition().y_), TS_WORLD);
+        node_->SetPosition(node_->GetPosition().Lerp(CAMERA_DEFAULT_POS, Clamp(2.0f * timeStep, 0.0f, 1.0f)));
+        node_->SetRotation(node_->GetRotation().Slerp(Quaternion(90.0f, Vector3::RIGHT), Clamp(3.0f * timeStep, 0.0f, 1.0f)));
+        node_->Rotate(Quaternion(235.0f * timeStep, Vector3::UP));
 
-    float targetXPos{ (2.3f + 25.0f * (GLOBAL->GetHighscore() - GLOBAL->GetScore()) / GLOBAL->GetHighscore()) };
-    node_->SetPosition(Vector3(0.01f * (targetXPos + 99.0f * node_->GetPosition().x_),
-                               node_->GetPosition().y_,
-                               node_->GetPosition().z_));
+    } else {
 
-    if (GLOBAL->GetScore() > GLOBAL->GetHighscore())
-        node_->SetEnabled(false);
+        node_->Rotate(Quaternion(timeStep * 23.0f, Vector3::UP), TS_WORLD);
+
+        Vector3 targetPos{ (2.3f + 25.0f * (GLOBAL->GetHighscore() - GLOBAL->GetScore()) / GLOBAL->GetHighscore()),
+                    node_->GetScene()->GetChild("Urho")->GetPosition().y_ - node_->GetPosition().y_,
+                    node_->GetPosition().z_
+                         };
+        node_->SetPosition(Vector3(0.01f * ( targetPos + 99.0f * node_->GetPosition() )));
+    }
 }
 
 

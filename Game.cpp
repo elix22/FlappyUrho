@@ -1,4 +1,6 @@
-﻿#include "Global.h"
+﻿#include <fstream>
+
+#include "Global.h"
 #include "Barrier.h"
 #include "Crown.h"
 #include "Weed.h"
@@ -65,8 +67,6 @@ public:
         Sound* music{CACHE->GetResource<Sound>("Music/Urho - Disciples of Urho_LOOP.ogg")};
         music->SetLooped(true);
         musicSource->Play(music);
-
-//        GetSubsystem<Audio>()->Stop();
     }
 
     void CreateScene()
@@ -125,7 +125,7 @@ public:
         {
             Node* barrierNode{scene_->CreateChild("Barrier")};
             barrierNode->CreateComponent<Barrier>();
-            barrierNode->SetPosition(Vector3(BAR_OUTSIDE_X + i * BAR_INTERVAL, BAR_RANDOM_Y, 0.0f));
+            barrierNode->SetPosition(Vector3(BAR_OUTSIDE_X * 1.23f + i * BAR_INTERVAL, BAR_RANDOM_Y, 0.0f));
         }
     }
     void CreateWeeds()
@@ -184,6 +184,7 @@ public:
             Node* urhoNode{scene_->GetChild("Urho")};
             SoundSource* soundSource{urhoNode->GetOrCreateComponent<SoundSource>()};
             soundSource->Play(CACHE->GetResource<Sound>("Samples/Hit.ogg"));
+
         }
         else if (GLOBAL->neededGameState_ == GS_INTRO)
         {

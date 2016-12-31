@@ -64,7 +64,7 @@ void Fish::HandleCollisionEnd(StringHash eventType, VariantMap& eventData)
     {
         if (GLOBAL->gameState_ == GS_PLAY){
             GLOBAL->SetScore(GLOBAL->GetScore() + 1);
-            SoundSource* soundSource{otherNode->GetOrCreateComponent<SoundSource>()};
+            SoundSource* soundSource{ otherNode->GetOrCreateComponent<SoundSource>() };
             soundSource->Play(CACHE->GetResource<Sound>("Samples/Pass.ogg"));
         }
     }
@@ -93,7 +93,7 @@ void Fish::Update(float timeStep)
     if (GLOBAL->gameState_ != GS_PLAY)
         return;
 
-    Vector3 pos{node_->GetPosition()};
+    Vector3 pos{ node_->GetPosition() };
 
     verticalSpeed_ -= timeStep * GRAV_ACC;
     
@@ -114,7 +114,7 @@ void Fish::Update(float timeStep)
     float xRot{Clamp(Lerp(node_->GetRotation().y_, -34.0f * verticalSpeed_, Clamp(timeStep * 2.0f, 0.0f, 0.5f)), -13.0f, 13.0f)};
     node_->SetRotation(Quaternion(xRot, 90.0f, 0.0f));
 
-    AnimationController* animationController{node_->GetComponent<AnimationController>()};
+    AnimationController* animationController{ node_->GetComponent<AnimationController>() };
     animationController->SetSpeed("Models/Swim.ani", Clamp(0.1f*(verticalSpeed_ + 23.0f), 0.0f, 5.0f));
 
     AnimatedModel* animatedModel{node_->GetComponent<AnimatedModel>()};

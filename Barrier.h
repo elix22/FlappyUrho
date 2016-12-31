@@ -12,6 +12,9 @@ public:
     static void RegisterObject(Context* context);
     void Update(float timeStep);
     void OnNodeSet(Node* node);
+private:
+    static StaticModelGroup* netGroup_;
+
 };
 
 #endif // BARRIERLOGIC_H
