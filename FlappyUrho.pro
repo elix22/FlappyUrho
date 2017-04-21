@@ -1,3 +1,5 @@
+TARGET = flappyurho
+
 LIBS += ../FlappyUrho/Urho3D/lib/libUrho3D.a \
     -lpthread \
     -ldl \
@@ -14,23 +16,26 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += \
-    CameraLogic.cpp \
-    Game.cpp \
-    Global.cpp \
-    Fish.cpp \
-    Barrier.cpp \
-    Environment.cpp \
-    Weed.cpp \
-    Crown.cpp
+    mastercontrol.cpp \
+    weed.cpp \
+    global.cpp \
+    fish.cpp \
+    environment.cpp \
+    crown.cpp \
+    flappycam.cpp \
+    barrier.cpp \
+    score3d.cpp
 
 HEADERS += \
-    CameraLogic.h \
-    Global.h \
     Urho3DAll.h \
-    Barrier.h \
-    Environment.h \
-    Fish.h \
-    Weed.h \
-    Crown.h
+    mastercontrol.h \
+    weed.h \
+    global.h \
+    fish.h \
+    environment.h \
+    crown.h \
+    flappycam.h \
+    barrier.h \
+    score3d.h
 
 OTHER_FILES += \

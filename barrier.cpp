@@ -1,5 +1,5 @@
-﻿#include "Barrier.h"
-#include "Crown.h"
+﻿#include "barrier.h"
+#include "crown.h"
 
 StaticModelGroup* Barrier::netGroup_{};
 

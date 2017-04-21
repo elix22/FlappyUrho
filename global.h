@@ -32,6 +32,8 @@
 #define RENDERER GetSubsystem<Renderer>()
 #define GRAPHICS GetSubsystem<Graphics>()
 
+class Score3D;
+
 enum GameState
 {
     GS_INTRO = 0,
@@ -49,18 +51,24 @@ public:
     Global(Context* context);
     void HandlePostUpdate(StringHash eventType, VariantMap& eventData);
     
-    int GetScore() const { return score_; }
-    void SetScore(int score);
-    int GetHighscore() const { return highscore_; }
+    unsigned GetScore() const { return score_; }
+    void SetScore(unsigned score);
+    unsigned GetHighscore() const { return highscore_; }
+    void SetHighscore(unsigned highscore);
 
     GameState gameState_;
     GameState neededGameState_;
     float sinceLastReset_;
 
+    void SetScores3D(Score3D* score3d, Score3D* highscore3d);
 private:
-    int score_;
-    int highscore_;
+    unsigned score_;
+    unsigned highscore_;
     bool scoreTextDirty_;
+    bool highscoreTextDirty_;
+
+    Score3D* score3d_;
+    Score3D* highscore3d_;
 };
 
 #endif // GLOBAL_H

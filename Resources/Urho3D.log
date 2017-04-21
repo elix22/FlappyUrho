@@ -1,0 +1,11 @@
+[Fri Apr 21 23:58:40 2017] INFO: Opened log file Urho3D.log
+[Fri Apr 21 23:58:40 2017] INFO: Created 3 worker threads
+[Fri Apr 21 23:58:40 2017] INFO: Added resource path /home/frode/Creations/Games/.build-FlappyUrho-Desktop-Debug/Resources/
+[Fri Apr 21 23:58:40 2017] INFO: Added resource path /home/frode/Creations/Games/.build-FlappyUrho-Desktop-Debug/Data/
+[Fri Apr 21 23:58:40 2017] INFO: Added resource path /home/frode/Creations/Games/.build-FlappyUrho-Desktop-Debug/CoreData/
+[Fri Apr 21 23:58:40 2017] INFO: Set screen mode 1920x1080 fullscreen monitor 1862270976
+[Fri Apr 21 23:58:40 2017] INFO: Initialized input
+[Fri Apr 21 23:58:40 2017] INFO: Initialized user interface
+[Fri Apr 21 23:58:40 2017] INFO: Initialized renderer
+[Fri Apr 21 23:58:40 2017] INFO: Set audio mode 44100 Hz stereo interpolated
+[Fri Apr 21 23:58:40 2017] INFO: Initialized engine

@@ -1,4 +1,4 @@
-#include "Weed.h"
+#include "weed.h"
 
 
 Weed::Weed(Context* context) : LogicComponent(context)
@@ -16,13 +16,13 @@ void Weed::OnNodeSet(Node* node)
     if (!node_)
         return;
 
-    AnimatedModel* animatedModel{node_->CreateComponent<AnimatedModel>()};
+    AnimatedModel* animatedModel{ node_->CreateComponent<AnimatedModel>() };
     animatedModel->SetModel(CACHE->GetResource<Model>("Models/Weed.mdl"));
     animatedModel->SetMaterial(CACHE->GetResource<Material>("Materials/VCol.xml")->Clone());
     animatedModel->GetMaterial()->SetShaderParameter("MatDiffColor", Color(Random(0.8f, 1.0f), Random(0.8f, 1.0f), Random(0.8f, 1.0f)));
     animatedModel->SetCastShadows(false);
 
-    AnimationController* animCtrl{node_->CreateComponent<AnimationController>()};
+    AnimationController* animCtrl{ node_->CreateComponent<AnimationController>() };
     animCtrl->PlayExclusive("Models/Wave.ani", 1, true);
     animCtrl->SetAnimationTime(Random(animCtrl->GetLength("Models/Wave.ani")));
     animCtrl->SetSpeed("Models/Wave.ani", Random(0.42f, 0.666f));

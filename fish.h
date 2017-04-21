@@ -1,7 +1,7 @@
 ﻿#ifndef FISHLOGIC_H
 #define FISHLOGIC_H
 
-#include "Global.h"
+#include "global.h"
 
 class Fish : public LogicComponent
 {

@@ -1,7 +1,7 @@
 #ifndef WEED_H
 #define WEED_H
 
-#include <Global.h>
+#include <global.h>
 
 
 class Weed : public LogicComponent

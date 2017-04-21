@@ -1,4 +1,4 @@
-#include "Crown.h"
+#include "crown.h"
 
 
 Crown::Crown(Context* context) : LogicComponent(context)
@@ -11,9 +11,11 @@ void Crown::RegisterObject(Context* context)
 }
 
 void Crown::OnNodeSet(Node* node)
-{ (void)node;
+{ if (!node) return;
 
-    node_->Rotate(Quaternion(23.5f, Vector3::FORWARD), TS_WORLD);
+    node_->SetPosition(Vector3::RIGHT * 19.0f);
+
+    node_->SetRotation(Quaternion(23.5f, Vector3::FORWARD));
 
     StaticModel* crownModel{ node_->CreateComponent<StaticModel>() };
     crownModel->SetModel(CACHE->GetResource<Model>("Models/Crown.mdl"));
@@ -23,17 +25,21 @@ void Crown::OnNodeSet(Node* node)
 
 void Crown::Update(float timeStep)
 {
+//    node_->SetEnabled(GLOBAL->GetHighscore() > 0);
+
     if (GLOBAL->GetScore() > GLOBAL->GetHighscore()){
 
         node_->SetPosition(node_->GetPosition().Lerp(CAMERA_DEFAULT_POS, Clamp(2.0f * timeStep, 0.0f, 1.0f)));
         node_->SetRotation(node_->GetRotation().Slerp(Quaternion(90.0f, Vector3::RIGHT), Clamp(3.0f * timeStep, 0.0f, 1.0f)));
-        node_->Rotate(Quaternion(235.0f * timeStep, Vector3::UP));
+        node_->Rotate(Quaternion(235.0f * timeStep, Vector3::UP), TS_LOCAL);
 
     } else {
 
         node_->Rotate(Quaternion(timeStep * 23.0f, Vector3::UP), TS_WORLD);
+        node_->Rotate(Quaternion(timeStep * 23.0f, Vector3::UP), TS_LOCAL);
 
-        Vector3 targetPos{ (2.3f + 25.0f * (GLOBAL->GetHighscore() - GLOBAL->GetScore()) / GLOBAL->GetHighscore()),
+        Vector3 targetPos{ 2.3f + (10.0f * GLOBAL->GetHighscore() == 0) +
+                    + 25.0f * (GLOBAL->GetHighscore() - GLOBAL->GetScore()) / (float)Max(GLOBAL->GetHighscore(), 1),
                     node_->GetScene()->GetChild("Urho")->GetPosition().y_ - node_->GetPosition().y_,
                     node_->GetPosition().z_
                          };
@@ -41,5 +47,8 @@ void Crown::Update(float timeStep)
     }
 }
 
-
-
+void Crown::Reset()
+{
+    node_->SetPosition(Vector3::RIGHT * 19.0f);
+    node_->SetRotation(Quaternion(23.5f, Vector3::FORWARD));
+}

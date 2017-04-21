@@ -1,7 +1,7 @@
 ﻿#ifndef ENVIRONMENTLOGIC_H
 #define ENVIRONMENTLOGIC_H
 
-#include "Global.h"
+#include "global.h"
 
 class Environment : public LogicComponent
 {

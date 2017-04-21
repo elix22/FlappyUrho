@@ -1,4 +1,4 @@
-﻿#include "Environment.h"
+﻿#include "environment.h"
 
 Environment::Environment(Context* context) :
     LogicComponent(context)

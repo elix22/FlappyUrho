@@ -1,7 +1,7 @@
 ﻿#ifndef BARRIERLOGIC_H
 #define BARRIERLOGIC_H
 
-#include "Global.h"
+#include "global.h"
 
 class Barrier : public LogicComponent
 {

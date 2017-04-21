@@ -1,4 +1,4 @@
-﻿#include "Fish.h"
+﻿#include "fish.h"
 
 Fish::Fish(Context* context) :
     LogicComponent(context),
@@ -72,6 +72,9 @@ void Fish::HandleCollisionEnd(StringHash eventType, VariantMap& eventData)
 
 void Fish::Reset()
 {
+    node_->SetPosition(Vector3::ZERO);
+    node_->SetRotation(URHO_DEFAULT_ROTATION);
+
     verticalSpeed_ = 0.0f;
     jumpDelay_ = 0.0f;
 }
@@ -89,6 +92,9 @@ void Fish::Update(float timeStep)
 
         return;
     }
+
+    AnimationController* animationController{ node_->GetComponent<AnimationController>() };
+    animationController->SetSpeed("Models/Swim.ani", Clamp(0.1f*(verticalSpeed_ + 23.0f), 0.0f, 5.0f));
 
     if (GLOBAL->gameState_ != GS_PLAY)
         return;
@@ -113,9 +119,6 @@ void Fish::Update(float timeStep)
     node_->SetPosition(pos);
     float xRot{Clamp(Lerp(node_->GetRotation().y_, -34.0f * verticalSpeed_, Clamp(timeStep * 2.0f, 0.0f, 0.5f)), -13.0f, 13.0f)};
     node_->SetRotation(Quaternion(xRot, 90.0f, 0.0f));
-
-    AnimationController* animationController{ node_->GetComponent<AnimationController>() };
-    animationController->SetSpeed("Models/Swim.ani", Clamp(0.1f*(verticalSpeed_ + 23.0f), 0.0f, 5.0f));
 
     AnimatedModel* animatedModel{node_->GetComponent<AnimatedModel>()};
     if (!animatedModel->IsInView())
