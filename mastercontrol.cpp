@@ -169,17 +169,6 @@ void MasterControl::CreateCrown()
 
 void MasterControl::CreateUI()
 {
-
-//    Text* scoreText{ UI_ROOT->CreateChild<Text>("Score") };
-//    scoreText->SetFont(font, 40);
-//    scoreText->SetTextEffect(TE_STROKE);
-//    scoreText->SetColor(Color::BLACK);
-//    scoreText->SetEffectColor(Color::WHITE);
-
-//    scoreText->SetVisible(false);
-
-//    scoreText->AddTags("Gameplay;Dead");
-
     Font* font{ CACHE->GetResource<Font>("Fonts/Ubuntu-BI.ttf") };
 
     Text* helpText{ UI_ROOT->CreateChild<Text>() };

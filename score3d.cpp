@@ -64,7 +64,9 @@ Vector3 Score3D::GetDigitTargetPosition(int index)
 }
 Vector3 Score3D::GetRootPosition()
 {
-    return Vector3((alignRight_ ? 17.0f : -17.0f + DIGIT_SPACING * digitNodes_.Size() - 1), 8.0f, -5.0f);
+    float ratio{ static_cast<float>(GRAPHICS->GetWidth()) / GRAPHICS->GetHeight() };
+    float scoreWidth{ DIGIT_SPACING * digitNodes_.Size() - 1 };
+    return Vector3(alignRight_ ? 9.5f * ratio : -9.5f * ratio + scoreWidth, 8.0f, -5.0f);
 }
 
 
