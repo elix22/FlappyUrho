@@ -77,8 +77,8 @@ void Score3D::AddDigit()
     digitNode->CreateComponent<StaticModel>();
     digitNodes_.Push(digitNode);
 
-    if (!alignRight_)
-        node_->SetPosition(GetRootPosition());
+//    if (!alignRight_)
+    node_->SetPosition(GetRootPosition());
 }
 
 void Score3D::RemoveDigit()
@@ -88,7 +88,7 @@ void Score3D::RemoveDigit()
     lastDigit->Remove();
     digitNodes_.Pop();
 
-    if (!alignRight_)
-        node_->SetPosition(GetRootPosition());
+//    if (!alignRight_)
+    node_->SetPosition(GetRootPosition());
 }
 

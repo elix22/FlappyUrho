@@ -45,9 +45,9 @@ void MasterControl::Setup()
     String resourcePaths{};
     FileSystem* fileSystem{ GetSubsystem<FileSystem>() };
 
-    /*if (fileSystem->DirExists(fileSystem->GetAppPreferencesDir("luckey", "flappyurho")))
-        resourcePaths = fileSystem->GetAppPreferencesDir("luckey", "flappyurho");
-    else */if (fileSystem->DirExists("Resources"))
+    /*if (fileSystem->DirExists(fileSystem->GetAppPreferencesDir("urho3d", "flappyurho")))
+        resourcePaths = fileSystem->GetAppPreferencesDir("urho3d", "flappyurho");
+    else*/ if (fileSystem->DirExists("Resources"))
         resourcePaths = "Resources";
     else if (fileSystem->DirExists("../FlappyUrho/Resources"))
         resourcePaths = "../FlappyUrho/Resources";
@@ -61,6 +61,8 @@ void MasterControl::Setup()
         resourcePaths += "CoreData;";
 
     engineParameters_[EP_RESOURCE_PATHS] = resourcePaths;
+    engineParameters_[EP_LOG_NAME] = GetSubsystem<FileSystem>()->GetAppPreferencesDir("urho3d", "logs")+"FlappyUrho.log";
+    engineParameters_[EP_WORKER_THREADS] = false;
     engineParameters_[EP_WINDOW_TITLE] = "Flappy Urho";
     engineParameters_[EP_WINDOW_ICON] = "icon.png";
 
