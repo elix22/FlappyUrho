@@ -121,8 +121,8 @@ void Fish::Update(float timeStep)
 
     pos += Vector3::UP * verticalSpeed_ * timeStep;
     node_->SetPosition(pos);
-    float xRot{Clamp(Lerp(0.0f, -34.0f * verticalSpeed_, Clamp(timeStep * 2.0f, 0.0f, 0.666f)), -13.0f, 13.0f)};
-    node_->SetRotation(Quaternion(xRot, 90.0f, 0.0f));
+    float xRot{Clamp(Lerp(0.0f, 34.0f * verticalSpeed_, Clamp(timeStep * 2.0f, 0.0f, 0.666f)), -13.0f, 13.0f)};
+    node_->SetRotation(Quaternion(xRot, -90.0f, 0.0f));
 
     AnimatedModel* animatedModel{node_->GetComponent<AnimatedModel>()};
     if (!animatedModel->IsInView())
